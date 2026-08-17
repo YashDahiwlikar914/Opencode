@@ -16,7 +16,7 @@ import { ShellSelect } from "./shell/select.js"
 import type { ShellCreateBefore } from "@opencode-ai/plugin/effect/shell"
 import { PluginHooks } from "./plugin/hooks.js"
 
-export class NotFoundError extends Schema.TaggedErrorClass<NotFoundError>()("Shell.NotFoundError", {
+export class NotFoundError extends Schema.TaggedError<NotFoundError>()("Shell.NotFoundError", {
   id: Shell.ID,
 }) {}
 
