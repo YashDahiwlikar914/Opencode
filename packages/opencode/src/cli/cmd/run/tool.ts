@@ -320,6 +320,17 @@ function runList(p: ToolProps): ToolInline {
 }
 
 function runRead(p: ToolProps<typeof ReadTool>): ToolInline {
+  const raw = p.input.filePath ?? ""
+  const isSkill = raw.includes(".agents/skills/") && raw.endsWith("SKILL.md")
+  if (isSkill) {
+    const parts = raw.split("/")
+    const dir = parts.length >= 2 ? (parts[parts.length - 2] ?? "") : ""
+    const title = `Skill Loaded — ${Locale.titlecase(dir.replace(/[-_]/g, " "))}`
+    return {
+      icon: "→",
+      title,
+    }
+  }
   const file = toolPath(p.input.filePath)
   const description = info(p.frame.input, ["filePath"]) || undefined
   return {
@@ -685,6 +696,14 @@ function scrollBashFinal(p: ToolProps<typeof BashTool>): string {
 }
 
 function scrollReadStart(p: ToolProps<typeof ReadTool>): string {
+  const raw = p.input.filePath ?? ""
+  const isSkill = raw.includes(".agents/skills/") && raw.endsWith("SKILL.md")
+  if (isSkill) {
+    const parts = raw.split("/")
+    const dir = parts.length >= 2 ? (parts[parts.length - 2] ?? "") : ""
+    const title = `Skill Loaded — ${Locale.titlecase(dir.replace(/[-_]/g, " "))}`
+    return `→ ${title}`
+  }
   const file = toolPath(p.input.filePath)
   const extra = info(p.frame.input, ["filePath"])
   const tail = extra ? ` ${extra}` : ""

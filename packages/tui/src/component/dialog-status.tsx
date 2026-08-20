@@ -47,7 +47,7 @@ export function DialogStatus() {
           Status
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc
+          Esc
         </text>
       </box>
       <Show when={Object.keys(sync.data.mcp).length > 0} fallback={<text fg={theme.text}>No MCP Servers</text>}>
@@ -78,9 +78,9 @@ export function DialogStatus() {
                     <Switch fallback={item.status}>
                       <Match when={item.status === "connected"}>Connected</Match>
                       <Match when={item.status === "failed" && item}>{(val) => val().error}</Match>
-                      <Match when={item.status === "disabled"}>Disabled in configuration</Match>
+                      <Match when={item.status === "disabled"}>Disabled In Configuration</Match>
                       <Match when={(item.status as string) === "needs_auth"}>
-                        Needs authentication (run: opencode mcp auth {key})
+                        Needs Authentication (Run: opencode mcp auth {key})
                       </Match>
                       <Match when={(item.status as string) === "needs_client_registration" && item}>
                         {(val) => (val() as { error: string }).error}

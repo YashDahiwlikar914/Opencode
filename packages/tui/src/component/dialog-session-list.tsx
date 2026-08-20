@@ -110,7 +110,7 @@ export function DialogSessionList() {
           result = await sdk.client.experimental.workspace.create({ type: selection.workspaceType, branch: null })
         } catch (err) {
           toast.show({
-            title: "Failed to create workspace",
+            title: "Failed To Create Workspace",
             message: errorMessage(err),
             variant: "error",
           })
@@ -119,7 +119,7 @@ export function DialogSessionList() {
         const workspace = result?.data
         if (!workspace) {
           toast.show({
-            title: "Failed to create workspace",
+            title: "Failed To Create Workspace",
             message: errorMessage(result?.error ?? "no response"),
             variant: "error",
           })
@@ -154,7 +154,7 @@ export function DialogSessionList() {
           if (result.error) {
             toast.show({
               variant: "error",
-              title: "Failed to delete workspace",
+              title: "Failed To Delete Workspace",
               message: errorMessage(result.error),
             })
             return false
@@ -243,7 +243,7 @@ export function DialogSessionList() {
           ? () => <text fg={theme.accent}>{slot}</text>
           : undefined
       return {
-        title: isDeleting ? `Press ${deleteHint()} again to confirm` : x.title,
+        title: isDeleting ? `Press ${deleteHint()} Again To Confirm` : Locale.titlecase(x.title),
         bg: isDeleting ? theme.error : undefined,
         value: x.id,
         category,
@@ -290,14 +290,14 @@ export function DialogSessionList() {
       actions={[
         {
           command: "session.pin.toggle",
-          title: "pin/unpin",
+          title: "Pin/Unpin",
           onTrigger: (option: { value: string }) => {
             local.session.togglePin(option.value)
           },
         },
         {
           command: "session.delete",
-          title: "delete",
+          title: "Delete",
           onTrigger: async (option) => {
             if (toDelete() === option.value) {
               const session = sessions().find((item) => item.id === option.value)
@@ -313,7 +313,7 @@ export function DialogSessionList() {
                   } else {
                     toast.show({
                       variant: "error",
-                      title: "Failed to delete session",
+                      title: "Failed To Delete Session",
                       message: errorMessage(result.error),
                     })
                   }
@@ -326,7 +326,7 @@ export function DialogSessionList() {
                 } else {
                   toast.show({
                     variant: "error",
-                    title: "Failed to delete session",
+                    title: "Failed To Delete Session",
                     message: errorMessage(err),
                   })
                 }
@@ -346,7 +346,7 @@ export function DialogSessionList() {
         },
         {
           command: "session.rename",
-          title: "rename",
+          title: "Rename",
           onTrigger: async (option) => {
             dialog.replace(() => <DialogSessionRename session={option.value} />)
           },

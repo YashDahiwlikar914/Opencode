@@ -5,7 +5,14 @@ import { testRender, useRenderer } from "@opentui/solid"
 import { expect, test } from "bun:test"
 import { onCleanup } from "solid-js"
 import { TuiKeybind } from "../src/config/keybind"
-import { getOpencodeModeStack, OPENCODE_BASE_MODE, OpencodeKeymapProvider, registerOpencodeKeymap } from "../src/keymap"
+import {
+  formatKeyBindings,
+  formatKeySequence,
+  getOpencodeModeStack,
+  OPENCODE_BASE_MODE,
+  OpencodeKeymapProvider,
+  registerOpencodeKeymap,
+} from "../src/keymap"
 
 function createResolvedKeymapConfig(input: TuiKeybind.KeybindOverrides = {}) {
   const keybinds = TuiKeybind.parse(input)
@@ -138,4 +145,24 @@ test("mode-less bindings stay active when opencode mode changes", async () => {
   } finally {
     app.renderer.destroy()
   }
+})
+
+test("formats key sequence and key bindings to titlecase", async () => {
+  function Harness() {
+    const renderer = useRenderer()
+    const keymap = createDefaultOpenTuiKeymap(renderer)
+    const config = {
+      keybinds: createBindingLookup(TuiKeybind.toBindingConfig(TuiKeybind.parse({})), {
+        commandMap: TuiKeybind.CommandMap,
+        bindingDefaults: TuiKeybind.bindingDefaults(),
+      }),
+    }
+    expect(formatKeySequence(Array.from(keymap.parseKeySequence("ctrl+c")), config)).toBe("Ctrl+C")
+    expect(formatKeySequence(Array.from(keymap.parseKeySequence("ctrl+d")), config)).toBe("Ctrl+D")
+    expect(formatKeySequence(Array.from(keymap.parseKeySequence("ctrl+r")), config)).toBe("Ctrl+R")
+    expect(formatKeySequence(Array.from(keymap.parseKeySequence("ctrl+f")), config)).toBe("Ctrl+F")
+    return <box />
+  }
+  const app = await testRender(() => <Harness />)
+  app.renderer.destroy()
 })

@@ -25,7 +25,7 @@ export function DialogMessage(props: {
         {
           title: "Revert",
           value: "session.revert",
-          description: "undo messages and file changes",
+          description: "Undo Messages And File Changes",
           onSelect: (dialog) => {
             const msg = message()
             if (!msg) return
@@ -56,7 +56,7 @@ export function DialogMessage(props: {
         {
           title: "Copy",
           value: "message.copy",
-          description: "message text to clipboard",
+          description: "Message Text To Clipboard",
           onSelect: async (dialog) => {
             const msg = message()
             if (!msg) return
@@ -76,7 +76,7 @@ export function DialogMessage(props: {
         {
           title: "Fork",
           value: "session.fork",
-          description: "create a new session",
+          description: "Create A New Session",
           onSelect: async (dialog) => {
             const result = await sdk.client.session.fork({
               sessionID: props.sessionID,

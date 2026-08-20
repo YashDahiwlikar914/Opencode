@@ -79,7 +79,7 @@ export function DialogPrompt(props: DialogPromptProps) {
           {props.title}
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc
+          Esc
         </text>
       </box>
       <box gap={1}>
@@ -91,7 +91,7 @@ export function DialogPrompt(props: DialogPromptProps) {
             setTextareaTarget(val)
           }}
           initialValue={props.value}
-          placeholder={props.placeholder ?? "Enter text"}
+          placeholder={props.placeholder ?? "Enter Text"}
           placeholderColor={theme.textMuted}
           textColor={props.busy ? theme.textMuted : theme.text}
           focusedTextColor={props.busy ? theme.textMuted : theme.text}
@@ -103,10 +103,10 @@ export function DialogPrompt(props: DialogPromptProps) {
         </Show>
       </box>
       <box paddingBottom={1} gap={1} flexDirection="row">
-        <Show when={!props.busy} fallback={<text fg={theme.textMuted}>processing…</text>}>
+        <Show when={!props.busy} fallback={<text fg={theme.textMuted}>Processing…</text>}>
           <Show when={submitShortcut()}>
             <text fg={theme.text}>
-              {submitShortcut()} <span style={{ fg: theme.textMuted }}>submit</span>
+              {submitShortcut()} <span style={{ fg: theme.textMuted }}>Submit</span>
             </text>
           </Show>
         </Show>

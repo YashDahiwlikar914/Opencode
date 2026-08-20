@@ -90,7 +90,7 @@ export function DialogExportOptions(props: DialogExportOptionsProps) {
           Export Options
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc
+          Esc
         </text>
       </box>
       <box gap={1}>
@@ -113,7 +113,7 @@ export function DialogExportOptions(props: DialogExportOptionsProps) {
             val.traits = { status: "FILENAME" }
           }}
           initialValue={props.defaultFilename}
-          placeholder="Enter filename"
+          placeholder="Enter Filename"
           placeholderColor={theme.textMuted}
           textColor={theme.text}
           focusedTextColor={theme.text}
@@ -132,7 +132,7 @@ export function DialogExportOptions(props: DialogExportOptionsProps) {
           <text fg={store.active === "thinking" ? theme.primary : theme.textMuted}>
             {store.thinking ? "[x]" : "[ ]"}
           </text>
-          <text fg={store.active === "thinking" ? theme.primary : theme.text}>Include thinking</text>
+          <text fg={store.active === "thinking" ? theme.primary : theme.text}>Include Thinking</text>
         </box>
         <box
           flexDirection="row"
@@ -144,7 +144,7 @@ export function DialogExportOptions(props: DialogExportOptionsProps) {
           <text fg={store.active === "toolDetails" ? theme.primary : theme.textMuted}>
             {store.toolDetails ? "[x]" : "[ ]"}
           </text>
-          <text fg={store.active === "toolDetails" ? theme.primary : theme.text}>Include tool details</text>
+          <text fg={store.active === "toolDetails" ? theme.primary : theme.text}>Include Tool Details</text>
         </box>
         <box
           flexDirection="row"
@@ -156,7 +156,7 @@ export function DialogExportOptions(props: DialogExportOptionsProps) {
           <text fg={store.active === "assistantMetadata" ? theme.primary : theme.textMuted}>
             {store.assistantMetadata ? "[x]" : "[ ]"}
           </text>
-          <text fg={store.active === "assistantMetadata" ? theme.primary : theme.text}>Include assistant metadata</text>
+          <text fg={store.active === "assistantMetadata" ? theme.primary : theme.text}>Include Assistant Metadata</text>
         </box>
         <box
           flexDirection="row"
@@ -168,19 +168,19 @@ export function DialogExportOptions(props: DialogExportOptionsProps) {
           <text fg={store.active === "openWithoutSaving" ? theme.primary : theme.textMuted}>
             {store.openWithoutSaving ? "[x]" : "[ ]"}
           </text>
-          <text fg={store.active === "openWithoutSaving" ? theme.primary : theme.text}>Open without saving</text>
+          <text fg={store.active === "openWithoutSaving" ? theme.primary : theme.text}>Open Without Saving</text>
         </box>
       </box>
       <Show when={store.active !== "filename"}>
         <text fg={theme.textMuted} paddingBottom={1}>
-          Press <span style={{ fg: theme.text }}>space</span> to toggle, <span style={{ fg: theme.text }}>return</span>{" "}
-          to confirm
+          Press <span style={{ fg: theme.text }}>Space</span> To Toggle, <span style={{ fg: theme.text }}>Return</span>{" "}
+          To Confirm
         </text>
       </Show>
       <Show when={store.active === "filename"}>
         <text fg={theme.textMuted} paddingBottom={1}>
-          Press <span style={{ fg: theme.text }}>return</span> to confirm, <span style={{ fg: theme.text }}>tab</span>{" "}
-          for options
+          Press <span style={{ fg: theme.text }}>Return</span> To Confirm, <span style={{ fg: theme.text }}>Tab</span>{" "}
+          For Options
         </text>
       </Show>
     </box>

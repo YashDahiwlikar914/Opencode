@@ -31,7 +31,7 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
     const projectID = input.projectID()
     if (!projectID) return
     setCreating(true)
-    setProgress("Creating copy")
+    setProgress("Creating Copy")
     try {
       const generated = await sdk.client.experimental.projectCopy.generateName(
         { projectID, context },
@@ -54,13 +54,13 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
       // before moving on
       await sdk.client.path.get({ directory }, { throwOnError: true })
 
-      setProgress("Creating session")
+      setProgress("Creating Session")
       return directory
     } catch (err) {
       homeDestination?.clear()
       setProgress(undefined)
       setCreating(false)
-      toast.show({ title: "Creating workspace failed", message: errorMessage(err), variant: "error" })
+      toast.show({ title: "Creating Workspace Failed", message: errorMessage(err), variant: "error" })
       return
     }
   }
@@ -126,7 +126,7 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
       dialog.clear()
       return
     }
-    setProgress("Moving session")
+    setProgress("Moving Session")
     try {
       await sdk.client.experimental.controlPlane.moveSession(
         {
@@ -173,7 +173,7 @@ export function usePromptMove(input: { projectID: () => string | undefined; sess
   }
 
   function startSubmit() {
-    if (progress()) setProgress("Submitting prompt")
+    if (progress()) setProgress("Submitting Prompt")
   }
 
   function finishSubmit() {

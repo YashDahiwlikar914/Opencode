@@ -157,6 +157,18 @@ const layer = Layer.effect(
         return part
       })
 
+      const updateToolCallRaw = Effect.fn("SessionProcessor.updateToolCallRaw")(function* (
+        toolCallID: string,
+        delta: string,
+      ) {
+        const match = yield* readToolCall(toolCallID)
+        if (!match || match.part.state.status !== "pending") return undefined
+        return yield* session.updatePart({
+          ...match.part,
+          state: { ...match.part.state, raw: match.part.state.raw + delta },
+        })
+      })
+
       const completeToolCall = Effect.fn("SessionProcessor.completeToolCall")(function* (
         toolCallID: string,
         output: {
@@ -321,6 +333,7 @@ const layer = Layer.effect(
 
           case "tool-input-delta":
             yield* ensureToolCall(value)
+            yield* updateToolCallRaw(value.id, value.text)
             return
 
           case "tool-input-end": {

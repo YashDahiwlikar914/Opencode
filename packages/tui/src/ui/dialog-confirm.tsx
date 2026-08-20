@@ -27,7 +27,7 @@ export function DialogConfirm(props: DialogConfirmProps) {
     bindings: [
       {
         key: "return",
-        desc: "Confirm dialog selection",
+        desc: "Confirm Dialog Selection",
         group: "Dialog",
         cmd: () => {
           if (store.active === "confirm") props.onConfirm?.()
@@ -37,7 +37,7 @@ export function DialogConfirm(props: DialogConfirmProps) {
       },
       {
         key: "left",
-        desc: "Previous dialog option",
+        desc: "Previous Dialog Option",
         group: "Dialog",
         cmd: () => {
           setStore("active", store.active === "confirm" ? "cancel" : "confirm")
@@ -45,7 +45,7 @@ export function DialogConfirm(props: DialogConfirmProps) {
       },
       {
         key: "right",
-        desc: "Next dialog option",
+        desc: "Next Dialog Option",
         group: "Dialog",
         cmd: () => {
           setStore("active", store.active === "confirm" ? "cancel" : "confirm")
@@ -60,7 +60,7 @@ export function DialogConfirm(props: DialogConfirmProps) {
           {props.title}
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc
+          Esc
         </text>
       </box>
       <box paddingBottom={1}>

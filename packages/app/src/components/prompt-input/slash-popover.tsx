@@ -305,7 +305,7 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                     >
                       <div class="flex items-center gap-2 min-w-0">
                         <span
-                          class="whitespace-nowrap"
+                          class="whitespace-nowrap capitalize"
                           classList={{
                             "text-[13px] leading-[calc(var(--font-size-base)*1.8)] tracking-[-0.04px] [font-weight:440]":
                               props.newLayoutDesigns,

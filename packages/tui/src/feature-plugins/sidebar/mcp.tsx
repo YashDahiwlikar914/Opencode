@@ -38,7 +38,7 @@ function View(props: { api: TuiPluginApi }) {
             <Show when={!open()}>
               <span style={{ fg: theme().textMuted }}>
                 {" "}
-                ({on()} active{bad() > 0 ? `, ${bad()} error${bad() > 1 ? "s" : ""}` : ""})
+                ({on()} Active{bad() > 0 ? `, ${bad()} Error${bad() > 1 ? "s" : ""}` : ""})
               </span>
             </Show>
           </text>
@@ -64,8 +64,8 @@ function View(props: { api: TuiPluginApi }) {
                         <i>{item.error}</i>
                       </Match>
                       <Match when={item.status === "disabled"}>Disabled</Match>
-                      <Match when={item.status === "needs_auth"}>Needs auth</Match>
-                      <Match when={item.status === "needs_client_registration"}>Needs client ID</Match>
+                      <Match when={item.status === "needs_auth"}>Needs Auth</Match>
+                      <Match when={item.status === "needs_client_registration"}>Needs Client ID</Match>
                     </Switch>
                   </span>
                 </text>

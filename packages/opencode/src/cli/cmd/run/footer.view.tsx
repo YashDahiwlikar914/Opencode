@@ -249,7 +249,7 @@ export function RunFooterView(props: RunFooterViewProps) {
       return
     }
 
-    return interrupt() === "escape" ? "esc" : interrupt()
+    return interrupt() === "escape" ? "Esc" : interrupt()
   })
   const runTheme = createMemo(() => props.theme())
   const theme = createMemo(() => runTheme().footer)
@@ -407,7 +407,7 @@ export function RunFooterView(props: RunFooterViewProps) {
     }
 
     if (busy()) {
-      return armed() ? "again to interrupt" : "interrupt"
+      return armed() ? "Again To Interrupt" : "Interrupt"
     }
 
     if (stateStatus().length > 0) {
@@ -480,7 +480,7 @@ export function RunFooterView(props: RunFooterViewProps) {
     }
 
     if (shell()) {
-      return { key: "esc", label: "normal" }
+      return { key: "Esc", label: "normal" }
     }
 
     if (command()) {

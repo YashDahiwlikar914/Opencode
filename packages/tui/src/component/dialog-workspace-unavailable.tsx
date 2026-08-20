@@ -25,9 +25,9 @@ export function DialogWorkspaceUnavailable(props: { onRestore?: () => boolean | 
 
   useBindings(() => ({
     bindings: [
-      { key: "return", desc: "Confirm workspace option", group: "Dialog", cmd: () => void confirm() },
-      { key: "left", desc: "Cancel workspace restore", group: "Dialog", cmd: () => setStore("active", "cancel") },
-      { key: "right", desc: "Restore workspace", group: "Dialog", cmd: () => setStore("active", "restore") },
+      { key: "return", desc: "Confirm Workspace Option", group: "Dialog", cmd: () => void confirm() },
+      { key: "left", desc: "Cancel Workspace Restore", group: "Dialog", cmd: () => setStore("active", "cancel") },
+      { key: "right", desc: "Restore Workspace", group: "Dialog", cmd: () => setStore("active", "restore") },
     ],
   }))
 
@@ -38,14 +38,14 @@ export function DialogWorkspaceUnavailable(props: { onRestore?: () => boolean | 
           Workspace Unavailable
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc
+          Esc
         </text>
       </box>
       <text fg={theme.textMuted} wrapMode="word">
-        This session is attached to a workspace that is no longer available.
+        This Session Is Attached To A Workspace That Is No Longer Available.
       </text>
       <text fg={theme.textMuted} wrapMode="word">
-        Would you like to restore this session into a new workspace?
+        Would You Like To Restore This Session Into A New Workspace?
       </text>
       <box flexDirection="row" justifyContent="flex-end" paddingBottom={1} gap={1}>
         <For each={options}>

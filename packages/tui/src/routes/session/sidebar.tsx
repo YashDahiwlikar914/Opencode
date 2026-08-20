@@ -8,6 +8,7 @@ import { usePluginRuntime } from "../../plugin/runtime"
 
 import { getScrollAcceleration } from "../../util/scroll"
 import { WorkspaceLabel } from "../../component/workspace-label"
+import { Locale } from "../../util/locale"
 
 export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
   const pluginRuntime = usePluginRuntime()
@@ -26,17 +27,20 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
   return (
     <Show when={session()}>
       <box
-        backgroundColor={theme.backgroundPanel}
-        width={42}
+        flexDirection="column"
+        flexShrink={0}
+        width={40}
         height="100%"
-        paddingTop={1}
-        paddingBottom={1}
-        paddingLeft={2}
-        paddingRight={2}
+        backgroundColor={props.overlay ? theme.background : theme.backgroundPanel}
+        borderStyle={props.overlay ? "single" : undefined}
+        borderColor={props.overlay ? theme.border : undefined}
+        paddingTop={props.overlay ? 0 : 1}
+        paddingBottom={props.overlay ? 0 : 1}
+        paddingLeft={props.overlay ? 0 : 2}
+        paddingRight={props.overlay ? 0 : 2}
         position={props.overlay ? "absolute" : "relative"}
       >
         <scrollbox
-          flexGrow={1}
           scrollAcceleration={scrollAcceleration()}
           verticalScrollbarOptions={{
             trackOptions: {
@@ -50,12 +54,12 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
               name="sidebar_title"
               mode="single_winner"
               session_id={props.sessionID}
-              title={session()!.title}
+              title={Locale.titlecase(session()!.title)}
               share_url={session()!.share?.url}
             >
               <box paddingRight={1}>
                 <text fg={theme.text}>
-                  <b>{session()!.title}</b>
+                  <b>{Locale.titlecase(session()!.title)}</b>
                 </text>
                 <Show when={InstallationChannel !== "latest"}>
                   <text fg={theme.textMuted}>{props.sessionID}</text>

@@ -72,12 +72,12 @@ export function DialogWorkspaceFileChanges(props: {
           {props.title ?? "File Changes Found"}
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc
+          Esc
         </text>
       </box>
       <box paddingLeft={2} paddingRight={2}>
         <text fg={theme.textMuted} wrapMode="word">
-          {props.message ?? "Do you want to move these changes with the session?"}
+          {props.message ?? "Do You Want To Move These Changes With The Session?"}
         </text>
       </box>
       <scrollbox

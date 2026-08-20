@@ -653,7 +653,12 @@ export function PromptInputV2Popover(props: {
             >
               <div class="flex min-w-0 flex-1 items-center gap-2">
                 <PromptInputV2SuggestionIcon item={item} />
-                <span class="shrink-0 text-v2-text-text-base">{item.label}</span>
+                <span
+                  class="shrink-0 text-v2-text-text-base"
+                  classList={{ capitalize: item.kind === "command" }}
+                >
+                  {item.label}
+                </span>
                 <Show when={item.description}>
                   <span class="min-w-0 truncate text-v2-text-text-muted">{item.description}</span>
                 </Show>

@@ -5,7 +5,7 @@ describe("providerOptions", () => {
   test("includes a synthetic Other option for custom providers", () => {
     expect(providerOptions([{ id: "openai", name: "OpenAI" }]).at(-1)).toMatchObject({
       title: "Other",
-      description: "Custom provider",
+      description: "Custom Provider",
       category: "Providers",
     })
   })

@@ -140,3 +140,12 @@ test("provides resolved config through Solid context", async () => {
 test("requires the config provider", () => {
   expect(() => useTuiConfig()).toThrow("TuiConfigProvider is missing")
 })
+
+test("all keybinding descriptions follow titlecase", async () => {
+  const { TuiKeybind } = await import("../src/config/keybind")
+  const { Locale } = await import("../src/util/locale")
+  for (const [key, def] of Object.entries(TuiKeybind.Definitions)) {
+    expect(def.description).toBe(Locale.titlecase(def.description))
+  }
+})
+

@@ -17,6 +17,12 @@ export const Plugin = define({
     const location = yield* Location.Service
     yield* ctx.skill.transform(
       Effect.fn(function* (draft) {
+        draft.source(
+          SkillV2.DirectorySource.make({
+            type: "directory",
+            path: AbsolutePath.make(path.join(global.home, ".agents/skills")),
+          }),
+        )
         const entries = yield* config.entries()
         const directories = entries.flatMap((entry) => (entry.type === "directory" ? [entry.path] : []))
         const items = entries.flatMap((entry) => (entry.type === "document" ? (entry.info.skills ?? []) : []))

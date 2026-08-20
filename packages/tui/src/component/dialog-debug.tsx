@@ -41,13 +41,13 @@ export function DialogDebug() {
       .write?.(text)
       .then(() => {
         setCopied(true)
-        toast.show({ message: "Debug info copied to clipboard", variant: "info" })
+        toast.show({ message: "Debug Info Copied To Clipboard", variant: "info" })
       })
       .catch(toast.error)
   }
 
   useBindings(() => ({
-    bindings: [{ key: "return", desc: "Copy debug info", group: "Dialog", cmd: copy }],
+    bindings: [{ key: "return", desc: "Copy Debug Info", group: "Dialog", cmd: copy }],
   }))
 
   return (
@@ -57,7 +57,7 @@ export function DialogDebug() {
           Debug
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc
+          Esc
         </text>
       </box>
       {/* No click-to-copy here: releasing a mouse selection must trigger the
@@ -77,12 +77,12 @@ export function DialogDebug() {
         </For>
       </box>
       <box flexDirection="row" justifyContent="space-between">
-        <text fg={theme.textMuted}>Share this when reporting an issue.</text>
+        <text fg={theme.textMuted}>Share This When Reporting An Issue.</text>
         <text onMouseUp={copy}>
           <span style={{ fg: copied() ? theme.success : theme.text }}>
-            <b>{copied() ? "✓ copied" : "copy"}</b>{" "}
+            <b>{copied() ? "✓ Copied" : "Copy"}</b>{" "}
           </span>
-          <span style={{ fg: theme.textMuted }}>enter</span>
+          <span style={{ fg: theme.textMuted }}>Enter</span>
         </text>
       </box>
     </box>

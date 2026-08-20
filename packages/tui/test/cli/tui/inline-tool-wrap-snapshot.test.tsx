@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test"
-import { createSignal, For, Show } from "solid-js"
+import { createMemo, createSignal, For, Show } from "solid-js"
 import type { BoxRenderable, ScrollBoxRenderable } from "@opentui/core"
 import { testRender, type JSX } from "@opentui/solid"
 import {
@@ -14,8 +14,10 @@ import {
   parseQuestions,
   parseTodos,
   alwaysSeparate,
+  skillName,
   toolDisplay,
 } from "../../../src/routes/session"
+import { Locale } from "../../../src/util/locale"
 
 let testSetup: Awaited<ReturnType<typeof testRender>> | undefined
 
@@ -275,21 +277,22 @@ describe("TUI inline tool wrapping", () => {
 
   test("formats completed subagent toolcall details", () => {
     expect(formatCompletedSubagentDetail(0, "501ms")).toBe("501ms")
-    expect(formatCompletedSubagentDetail(1, "501ms")).toBe("1 toolcall · 501ms")
-    expect(formatCompletedSubagentDetail(2, "501ms")).toBe("2 toolcalls · 501ms")
-    expect(formatSubagentToolcalls(0)).toBe("0 toolcalls")
+    expect(formatCompletedSubagentDetail(1, "501ms")).toBe("1 Toolcall · 501ms")
+    expect(formatCompletedSubagentDetail(2, "501ms")).toBe("2 Toolcalls · 501ms")
+    expect(formatSubagentToolcalls(0)).toBe("0 Toolcalls")
   })
 
   test("keeps background state attached to the subagent identity", () => {
     expect(formatSubagentTitle("Explore", "Inspect renderer", false)).toBe("Explore Task — Inspect renderer")
     expect(formatSubagentTitle("Explore", "Inspect renderer", true)).toBe(
-      "Explore Task (background) — Inspect renderer",
+      "Explore Task (Background) — Inspect renderer",
     )
   })
 
   test("keeps retry status ahead of wrapping messages", () => {
-    expect(formatSubagentRetry(2, "Rate limited by provider")).toBe("Retrying (attempt 2) · Rate limited by provider")
+    expect(formatSubagentRetry(2, "Rate limited by provider")).toBe("Retrying (Attempt 2) · Rate limited by provider")
   })
+
 
   test("snapshots consecutive grep, glob, and read rows at a narrow width", async () => {
     expect(await renderFrame(() => <Fixture />, { width: 72, height: 12 })).toMatchSnapshot()
@@ -349,3 +352,123 @@ describe("TUI inline tool wrapping", () => {
     expect(scroll?.scrollTop).toBe(Math.max(0, scroll!.scrollHeight - scroll!.viewport.height))
   })
 })
+
+describe("skillName", () => {
+  test("reads the name from the parsed call input", () => {
+    expect(skillName({ name: "brainstorming" })).toBe("brainstorming")
+  })
+
+  test("parses a complete streamed JSON input", () => {
+    expect(skillName('{"name":"brainstorming"}')).toBe("brainstorming")
+  })
+
+  test("extracts the name from a partially streamed JSON input", () => {
+    expect(skillName('{"name":"brainstorming"')).toBe("brainstorming")
+  })
+
+  test("returns undefined while the name value is incomplete", () => {
+    expect(skillName('{"name":"br')).toBeUndefined()
+  })
+
+  test("returns undefined for an empty input", () => {
+    expect(skillName("")).toBeUndefined()
+  })
+})
+
+describe("Skill tool rendering", () => {
+  function SkillHarness(props: {
+    state: { status: "pending" | "running" | "completed"; raw?: string }
+    input: Record<string, unknown>
+  }) {
+    const name = createMemo(() => {
+      const state = props.state
+      if (state.status === "pending" && "raw" in state && state.raw) return skillName(state.raw)
+      return skillName(props.input)
+    })
+    const pending = createMemo(() => {
+      const value = name()
+      return value ? `Loading Skill "${Locale.titlecase(value)}"...` : "Loading Skill..."
+    })
+    return (
+      <InlineToolRow icon="→" pending={pending()} complete={name()}>
+        Skill "{name() ? Locale.titlecase(name()!) : ""}"
+      </InlineToolRow>
+    )
+  }
+
+  test("shows generic Loading Skill... when name is not yet streamed", async () => {
+    const [state] = createSignal<{ status: "pending" | "running" | "completed"; raw?: string }>({
+      status: "pending",
+      raw: "",
+    })
+    const [input] = createSignal<Record<string, unknown>>({})
+
+    const frame = await renderFrame(() => <SkillHarness state={state()} input={input()} />, { width: 72, height: 3 })
+    expect(frame).toContain("~ Loading Skill...")
+    expect(frame).not.toContain("undefined")
+  })
+
+  test("old pattern fails to reactively update because value is captured once", async () => {
+    function BrokenSkillHarness(props: {
+      state: { status: "pending" | "running" | "completed"; raw?: string }
+      input: Record<string, unknown>
+    }) {
+      const name = createMemo(() => {
+        const state = props.state
+        if (state.status === "pending" && "raw" in state && state.raw) return skillName(state.raw)
+        return skillName(props.input)
+      })
+      const value = name()
+      return (
+        <InlineToolRow icon="→" pending="Loading Skill..." complete={value}>
+          Skill "{value ? Locale.titlecase(value) : value}"
+        </InlineToolRow>
+      )
+    }
+
+    const [state, setState] = createSignal<{ status: "pending" | "running" | "completed"; raw?: string }>({
+      status: "pending",
+      raw: "",
+    })
+    const [input] = createSignal<Record<string, unknown>>({})
+
+    testSetup = await testRender(() => <BrokenSkillHarness state={state()} input={input()} />, { width: 72, height: 3 })
+    await testSetup.renderOnce()
+    let frame = testSetup.captureCharFrame().trimEnd()
+    expect(frame).toContain("~ Loading Skill...")
+
+    // In broken pattern, updating state does NOT update frame because value was captured at mount
+    setState({ status: "pending", raw: '{"name":"brainstorming"' })
+    await testSetup.renderOnce()
+    frame = testSetup.captureCharFrame().trimEnd()
+    expect(frame).toContain("~ Loading Skill...")
+    expect(frame).not.toContain('Skill "Brainstorming"')
+  })
+
+  test("reactively shows skill name in pending state when streamed with fixed pattern", async () => {
+    const [state, setState] = createSignal<{ status: "pending" | "running" | "completed"; raw?: string }>({
+      status: "pending",
+      raw: "",
+    })
+    const [input] = createSignal<Record<string, unknown>>({})
+
+    testSetup = await testRender(() => <SkillHarness state={state()} input={input()} />, { width: 72, height: 3 })
+    await testSetup.renderOnce()
+    let frame = testSetup.captureCharFrame().trimEnd()
+    expect(frame).toContain("~ Loading Skill...")
+
+    setState({ status: "pending", raw: '{"name":"brainstorming"' })
+    await testSetup.renderOnce()
+    frame = testSetup.captureCharFrame().trimEnd()
+    expect(frame).toContain('Skill "Brainstorming"')
+  })
+
+  test("renders completed skill name", async () => {
+    const frame = await renderFrame(
+      () => <SkillHarness state={{ status: "completed" }} input={{ name: "brainstorming" }} />,
+      { width: 72, height: 3 },
+    )
+    expect(frame).toContain('→ Skill "Brainstorming"')
+  })
+})
+

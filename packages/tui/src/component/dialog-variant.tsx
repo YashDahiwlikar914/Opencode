@@ -3,6 +3,11 @@ import { useLocal } from "../context/local"
 import { DialogSelect } from "../ui/dialog-select"
 import { useDialog } from "../ui/dialog"
 
+export function variantLabel(value: string | undefined) {
+  if (!value) return ""
+  return value.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
 export function DialogVariant() {
   const local = useLocal()
   const dialog = useDialog()
@@ -19,7 +24,7 @@ export function DialogVariant() {
       },
       ...local.model.variant.list().map((variant) => ({
         value: variant,
-        title: variant,
+        title: variantLabel(variant),
         onSelect: () => {
           dialog.clear()
           local.model.variant.set(variant)
@@ -31,7 +36,7 @@ export function DialogVariant() {
   return (
     <DialogSelect<string>
       options={options()}
-      title={"Select variant"}
+      title={"Select Variant"}
       current={local.model.variant.selected()}
       flat={true}
     />

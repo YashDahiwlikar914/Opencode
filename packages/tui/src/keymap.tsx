@@ -16,6 +16,7 @@ import { KeymapProvider, useKeymap, useKeymapSelector, useBindings } from "@open
 import { createMemo, type Accessor } from "solid-js"
 import { useTuiConfig } from "./config"
 import { TuiKeybind } from "./config/keybind"
+import { Locale } from "./util/locale"
 
 export const LEADER_TOKEN = "leader"
 export const OPENCODE_BASE_MODE = "base"
@@ -204,11 +205,13 @@ function formatOptions(config: FormatConfig) {
 }
 
 export function formatKeySequence(parts: Parameters<typeof formatKeySequenceExtra>[0], config: FormatConfig) {
-  return formatKeySequenceExtra(parts, formatOptions(config))
+  const result = formatKeySequenceExtra(parts, formatOptions(config))
+  return result ? Locale.titlecase(result) : result
 }
 
 export function formatKeyBindings(bindings: Parameters<typeof formatCommandBindingsExtra>[0], config: FormatConfig) {
-  return formatCommandBindingsExtra(bindings, formatOptions(config))
+  const result = formatCommandBindingsExtra(bindings, formatOptions(config))
+  return result ? Locale.titlecase(result) : result
 }
 
 export function registerOpencodeKeymap(keymap: OpenTuiKeymap, renderer: CliRenderer, config: ResolvedKeymapConfig) {

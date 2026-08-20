@@ -10,8 +10,8 @@ export function DialogHelp() {
 
   useBindings(() => ({
     bindings: [
-      { key: "return", desc: "Close help", group: "Dialog", cmd: () => dialog.clear() },
-      { key: "escape", desc: "Close help", group: "Dialog", cmd: () => dialog.clear() },
+      { key: "return", desc: "Close Help", group: "Dialog", cmd: () => dialog.clear() },
+      { key: "escape", desc: "Close Help", group: "Dialog", cmd: () => dialog.clear() },
     ],
   }))
 
@@ -22,7 +22,7 @@ export function DialogHelp() {
           Help
         </text>
         <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-          esc/enter
+          Esc / Enter
         </text>
       </box>
       <box paddingBottom={1}>
@@ -32,7 +32,7 @@ export function DialogHelp() {
       </box>
       <box flexDirection="row" justifyContent="flex-end" paddingBottom={1}>
         <box paddingLeft={3} paddingRight={3} backgroundColor={theme.primary} onMouseUp={() => dialog.clear()}>
-          <text fg={theme.selectedListItemText}>ok</text>
+          <text fg={theme.selectedListItemText}>OK</text>
         </box>
       </box>
     </box>

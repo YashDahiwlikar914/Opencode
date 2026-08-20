@@ -226,6 +226,31 @@ const fragmentFailureLLM = Layer.succeed(
 const fragmentFailureEnv = LayerNode.compile(root, [...replacements, [LLM.node, fragmentFailureLLM]])
 const itFragmentFailure = testEffect(fragmentFailureEnv)
 
+const skillInputLLM = Layer.succeed(
+  LLM.Service,
+  LLM.Service.of({
+    stream: () =>
+      Stream.make(
+        LLMEvent.stepStart({ index: 0 }),
+        LLMEvent.toolInputStart({ id: "call-1", name: "skill" }),
+        LLMEvent.toolInputDelta({ id: "call-1", name: "skill", text: '{"name":"brainstorm' }),
+        LLMEvent.toolInputDelta({ id: "call-1", name: "skill", text: 'ing"}' }),
+        LLMEvent.toolInputEnd({ id: "call-1", name: "skill" }),
+        LLMEvent.toolCall({ id: "call-1", name: "skill", input: { name: "brainstorming" }, providerExecuted: true }),
+        LLMEvent.toolResult({
+          id: "call-1",
+          name: "skill",
+          result: { type: "text", value: "loaded" },
+          providerExecuted: true,
+        }),
+        LLMEvent.stepFinish({ index: 0, reason: "stop" }),
+        LLMEvent.finish({ reason: "stop" }),
+      ),
+  }),
+)
+const skillInputEnv = LayerNode.compile(root, [...replacements, [LLM.node, skillInputLLM]])
+const itSkillInput = testEffect(skillInputEnv)
+
 const boot = Effect.fn("test.boot")(function* () {
   const processors = yield* SessionProcessor.Service
   const session = yield* Session.Service
@@ -867,6 +892,59 @@ it.live("session.processor effect tests complete AI SDK tool calls when native f
         expect(call.state.time.end).toBeDefined()
       }),
     { config: (url) => providerCfg(url) },
+  ),
+)
+
+itSkillInput.live("session.processor effect tests stream raw tool input onto the pending tool part", () =>
+  provideTmpdirInstance(
+    (dir) =>
+      Effect.gen(function* () {
+        const { processors, session, provider } = yield* boot()
+        const events = yield* EventV2Bridge.Service
+
+        const chat = yield* session.create({})
+        const parent = yield* user(chat.id, "skill")
+        const msg = yield* assistant(chat.id, parent.id, path.resolve(dir))
+        const mdl = yield* provider.getModel(ref.providerID, ref.modelID)
+        const seen: SessionV1.ToolPart[] = []
+        const off = yield* events.listen((event) => {
+          if (event.type !== MessageV2.Event.PartUpdated.type) return Effect.void
+          const part = (event as { data: { part?: SessionV1.Part } }).data.part
+          if (part?.type === "tool") seen.push(part)
+          return Effect.void
+        })
+        const handle = yield* processors.create({ assistantMessage: msg, sessionID: chat.id, model: mdl })
+
+        expect(
+          yield* handle.process({
+            user: {
+              id: parent.id,
+              sessionID: chat.id,
+              role: "user",
+              time: parent.time,
+              agent: parent.agent,
+              model: { providerID: ref.providerID, modelID: ref.modelID },
+            } satisfies SessionV1.User,
+            sessionID: chat.id,
+            model: mdl,
+            agent: agent(),
+            system: [],
+            messages: [{ role: "user", content: "skill" }],
+            tools: {},
+          }),
+        ).toBe("continue")
+        yield* off
+
+        const pending = seen.filter((part) => part.state.status === "pending")
+        expect(pending.length).toBeGreaterThan(0)
+        expect(pending.some((part) => part.state.status === "pending" && part.state.raw === '{"name":"brainstorming"}')).toBe(
+          true,
+        )
+        const completed = seen.find((part) => part.state.status === "completed")
+        if (!completed || completed.state.status !== "completed") return
+        expect(completed.state.input).toEqual({ name: "brainstorming" })
+      }),
+    { config: cfg },
   ),
 )
 

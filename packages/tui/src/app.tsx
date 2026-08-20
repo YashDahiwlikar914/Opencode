@@ -39,6 +39,7 @@ import { DataProvider } from "./context/data"
 import { LocationProvider } from "./context/location"
 import { LocalProvider, useLocal } from "./context/local"
 import { PermissionProvider } from "./context/permission"
+import { Locale } from "./util/locale"
 import { DialogModel } from "./component/dialog-model"
 import { useConnected } from "./component/use-connected"
 import { DialogMcp } from "./component/dialog-mcp"
@@ -465,7 +466,8 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         return
       }
 
-      const title = session.title.length > 40 ? session.title.slice(0, 37) + "…" : session.title
+      const rawTitle = Locale.titlecase(session.title)
+      const title = rawTitle.length > 40 ? rawTitle.slice(0, 37) + "…" : rawTitle
       renderer.setTerminalTitle(`OC | ${title}`)
       return
     }

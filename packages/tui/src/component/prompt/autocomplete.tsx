@@ -29,6 +29,24 @@ function removeLineRange(input: string) {
   return hashIndex !== -1 ? input.substring(0, hashIndex) : input
 }
 
+function titleCaseDescription(description: string | undefined) {
+  if (!description) return ""
+  return description
+    .trimStart()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
+function titleCaseCommandName(name: string) {
+  const [base, tag] = name.split(":")
+  const titlecased = base
+    .split("-")
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join("-")
+  return tag ? `${titlecased}:${tag}` : titlecased
+}
+
 function extractLineRange(input: string) {
   const hashIndex = input.lastIndexOf("#")
   if (hashIndex === -1) {
@@ -765,11 +783,15 @@ export function Autocomplete(props: {
               onMouseUp={() => select()}
             >
               <text fg={index === store.selected ? selectedForeground(theme) : theme.text} flexShrink={0}>
-                {option().display}
+                {store.visible === "/"
+                  ? "/" + titleCaseCommandName(option().display.slice(1))
+                  : option().display}
               </text>
               <Show when={option().description}>
                 <text fg={index === store.selected ? selectedForeground(theme) : theme.textMuted} wrapMode="none">
-                  {" " + option().description?.trimStart()}
+                  {store.visible === "/"
+                    ? " " + titleCaseDescription(option().description)
+                    : " " + option().description?.trimStart()}
                 </text>
               </Show>
             </box>

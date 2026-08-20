@@ -6,6 +6,7 @@ import { DialogSelect, type DialogSelectRef, type DialogSelectOption } from "../
 import { useTheme } from "../context/theme"
 import { TextAttributes } from "@opentui/core"
 import { useSDK } from "../context/sdk"
+import { Locale } from "../util/locale"
 
 function Status(props: { enabled: boolean; loading: boolean }) {
   const { theme } = useTheme()
@@ -37,7 +38,7 @@ export function DialogMcp() {
       map(([name, status]) => ({
         value: name,
         title: name,
-        description: status.status === "failed" ? "failed" : status.status,
+        description: status.status === "failed" ? "Failed" : Locale.titlecase(status.status),
         footer: <Status enabled={local.mcp.isEnabled(name)} loading={loadingMcp === name} />,
         category: undefined,
       })),
@@ -47,7 +48,7 @@ export function DialogMcp() {
   const actions = createMemo(() => [
     {
       command: "dialog.mcp.toggle",
-      title: "toggle",
+      title: "Toggle",
       onTrigger: async (option: DialogSelectOption<string>) => {
         // Prevent toggling while an operation is already in progress
         if (loading() !== null) return

@@ -118,7 +118,7 @@ test("app.exit prints the session epilogue after scoped cleanup", async () => {
     api?.keymap.dispatchCommand("app.exit")
     await task
 
-    expect(stdout).toContain("Demo session")
+    expect(stdout).toContain("Demo Session")
     expect(stdout).toContain("opencode -s dummy")
   } finally {
     process.stdout.write = originalWrite

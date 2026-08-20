@@ -10,6 +10,7 @@ import { createStore } from "solid-js/store"
 import { errorMessage } from "../util/error"
 import { useSDK } from "../context/sdk"
 import { useToast } from "../ui/toast"
+import { Locale } from "../util/locale"
 
 type WorkspaceOption = { workspace: Workspace }
 
@@ -41,10 +42,10 @@ export function DialogWorkspaceList() {
             removing() === workspace.id
               ? "Deleting…"
               : deleting() === workspace.id
-                ? `Delete ${workspace.name}? Press delete again`
+                ? `Delete ${workspace.name}? Press Delete Again`
                 : workspace.name,
           value: { workspace },
-          footer: workspace.type,
+          footer: Locale.titlecase(workspace.type),
           details: expanded[workspace.id] && workspace.directory ? [workspace.directory] : undefined,
           gutter: () => <text fg={status === "connected" ? theme.success : theme.error}>●</text>,
         }
@@ -71,7 +72,7 @@ export function DialogWorkspaceList() {
       setRemoving(undefined)
       toast.show({
         variant: "error",
-        title: "Failed to delete workspace",
+        title: "Failed To Delete Workspace",
         message: errorMessage(result.error),
       })
       return
@@ -103,7 +104,7 @@ export function DialogWorkspaceList() {
       actions={[
         {
           command: "session.delete",
-          title: "delete",
+          title: "Delete",
           onTrigger: (option) => void remove(option.value.workspace),
         },
       ]}

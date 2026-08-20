@@ -564,7 +564,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
             </text>
           )}
           <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
-            esc
+            Esc
           </text>
         </box>
         <Show when={props.renderFilter !== false}>
@@ -602,7 +602,7 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
           fallback={
             props.emptyView ?? (
               <box paddingLeft={4} paddingRight={4} paddingTop={1}>
-                <text fg={theme.textMuted}>No results found</text>
+                <text fg={theme.textMuted}>No Results Found</text>
               </box>
             )
           }

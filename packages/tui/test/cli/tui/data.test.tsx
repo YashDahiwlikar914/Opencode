@@ -484,3 +484,124 @@ test("projects live context updates with their message ID", async () => {
     app.renderer.destroy()
   }
 })
+
+test("transitions a skill tool part through pending input into the parsed call input", async () => {
+  const events = createEventSource()
+  const calls = createFetch(undefined, events)
+  let sync!: ReturnType<typeof useData>
+  let ready!: () => void
+  const mounted = new Promise<void>((resolve) => {
+    ready = resolve
+  })
+
+  function Probe() {
+    sync = useData()
+    onMount(ready)
+    return <box />
+  }
+
+  const app = await testRender(() => (
+    <TestTuiContexts>
+      <SDKProvider url="http://test" directory={directory} events={events.source} fetch={calls.fetch}>
+        <ProjectProvider>
+          <DataProvider>
+            <Probe />
+          </DataProvider>
+        </ProjectProvider>
+      </SDKProvider>
+    </TestTuiContexts>
+  ))
+
+  try {
+    await mounted
+    emitEvent(events, {
+      id: "evt_step_started_1",
+      type: "session.next.step.started",
+      properties: {
+        sessionID: "session-1",
+        assistantMessageID: "msg_assistant_skill_1",
+        timestamp: 1,
+        agent: "build",
+        model: { id: "model-1", providerID: "provider-1" },
+      },
+    })
+    emitEvent(events, {
+      id: "evt_input_start_1",
+      type: "session.next.tool.input.started",
+      properties: {
+        sessionID: "session-1",
+        assistantMessageID: "msg_assistant_skill_1",
+        timestamp: 2,
+        callID: "call-skill-1",
+        name: "skill",
+      },
+    })
+    emitEvent(events, {
+      id: "evt_input_delta_1",
+      type: "session.next.tool.input.delta",
+      properties: {
+        sessionID: "session-1",
+        assistantMessageID: "msg_assistant_skill_1",
+        timestamp: 2,
+        callID: "call-skill-1",
+        delta: '{"name":"brainstorming"}',
+      },
+    })
+    emitEvent(events, {
+      id: "evt_input_end_1",
+      type: "session.next.tool.input.ended",
+      properties: {
+        sessionID: "session-1",
+        assistantMessageID: "msg_assistant_skill_1",
+        timestamp: 2,
+        callID: "call-skill-1",
+        text: '{"name":"brainstorming"}',
+      },
+    })
+
+    const pending = () => {
+      const assistant = sync.session.message.list("session-1")?.[0]
+      if (assistant?.type !== "assistant") return undefined
+      return assistant.content[0]?.type === "tool" ? (assistant.content[0] as any) : undefined
+    }
+    await wait(() => pending()?.state.status === "pending")
+    expect(pending().state.input).toBe('{"name":"brainstorming"}')
+
+    emitEvent(events, {
+      id: "evt_called_1",
+      type: "session.next.tool.called",
+      properties: {
+        sessionID: "session-1",
+        timestamp: 3,
+        assistantMessageID: "msg_assistant_skill_1",
+        callID: "call-skill-1",
+        tool: "skill",
+        input: { name: "brainstorming" },
+        provider: { executed: false },
+      },
+    })
+
+    await wait(() => pending()?.state.status === "running")
+    expect(pending().state.input).toEqual({ name: "brainstorming" })
+
+    emitEvent(events, {
+      id: "evt_success_1",
+      type: "session.next.tool.success",
+      properties: {
+        sessionID: "session-1",
+        timestamp: 4,
+        assistantMessageID: "msg_assistant_skill_1",
+        callID: "call-skill-1",
+        structured: { name: "brainstorming" },
+        content: [{ type: "text", text: "Loaded skill" }],
+        result: { type: "text", value: "Loaded skill: brainstorming" },
+        provider: { executed: true },
+      },
+    })
+
+    await wait(() => pending()?.state.status === "completed")
+    expect(pending().state.input).toEqual({ name: "brainstorming" })
+  } finally {
+    app.renderer.destroy()
+  }
+})
