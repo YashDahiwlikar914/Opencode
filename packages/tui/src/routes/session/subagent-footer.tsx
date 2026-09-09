@@ -42,6 +42,15 @@ export function SubagentFooter() {
     const model = sync.data.provider.find((item) => item.id === last.providerID)?.models[last.modelID]
     const contextLimit = model?.limit.context
     const cost = session()?.cost ?? 0
+    // Session cumulative totals. Stored input excludes cached tokens, so add
+    // cache read/write back for the true input total and hit rate.
+    const sessionTokens = session()?.tokens
+    const totalInput = (sessionTokens?.input ?? 0) + (sessionTokens?.cache.read ?? 0) + (sessionTokens?.cache.write ?? 0)
+    const totalOutput = (sessionTokens?.output ?? 0) + (sessionTokens?.reasoning ?? 0)
+    const totals =
+      totalInput > 0 || totalOutput > 0
+        ? `${Locale.number(totalInput)}/${Locale.number(totalOutput)}/${totalInput > 0 ? Math.round(((sessionTokens?.cache.read ?? 0) / totalInput) * 100) : 0}%`
+        : undefined
 
     const money = new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -52,7 +61,8 @@ export function SubagentFooter() {
       context: contextLimit
         ? `${Locale.number(tokens)}/${Locale.number(contextLimit)} (${Math.round((tokens / contextLimit) * 100)}%)`
         : Locale.number(tokens),
-      cost: cost > 0 ? money.format(cost) : undefined,
+      totals,
+      cost: money.format(cost),
     }
   })
 
@@ -90,7 +100,7 @@ export function SubagentFooter() {
             <Show when={usage()}>
               {(item) => (
                 <text fg={theme.textMuted} wrapMode="none">
-                  {[item().context, item().cost].filter(Boolean).join(" · ")}
+                  {[item().context, item().totals, item().cost].filter(Boolean).join(" · ")}
                 </text>
               )}
             </Show>
