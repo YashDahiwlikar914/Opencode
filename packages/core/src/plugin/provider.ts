@@ -18,6 +18,7 @@ import { KiloPlugin } from "./provider/kilo"
 import { LLMGatewayPlugin } from "./provider/llmgateway"
 import { MistralPlugin } from "./provider/mistral"
 import { NvidiaPlugin } from "./provider/nvidia"
+import { OpenAIPlugin } from "./provider/openai"
 import { SnowflakeCortexPlugin } from "./provider/snowflake-cortex"
 import { OpenAICompatiblePlugin } from "./provider/openai-compatible"
 import { OpencodePlugin } from "./provider/opencode"
@@ -27,6 +28,7 @@ import { SapAICorePlugin } from "./provider/sap-ai-core"
 import { TogetherAIPlugin } from "./provider/togetherai"
 import { VercelPlugin } from "./provider/vercel"
 import { VenicePlugin } from "./provider/venice"
+import { XAIPlugin } from "./provider/xai"
 import { ZenmuxPlugin } from "./provider/zenmux"
 import type { PluginInternal } from "./internal"
 import type { Scope } from "effect"
@@ -56,12 +58,14 @@ export const ProviderPlugins: PluginInternal.Plugin<PluginInternal.Requirements 
   OpencodePlugin,
   SnowflakeCortexPlugin,
   OpenAICompatiblePlugin,
+  OpenAIPlugin,
   OpenRouterPlugin,
   PerplexityPlugin,
   SapAICorePlugin,
   TogetherAIPlugin,
   VercelPlugin,
   VenicePlugin,
+  XAIPlugin,
   ZenmuxPlugin,
   DynamicProviderPlugin,
 ]

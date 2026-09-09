@@ -10,6 +10,7 @@ export const ID = Schema.String.pipe(
   statics((schema) => ({
     opencode: schema.make("opencode"),
     anthropic: schema.make("anthropic"),
+    openai: schema.make("openai"),
     google: schema.make("google"),
     googleVertex: schema.make("google-vertex"),
     githubCopilot: schema.make("github-copilot"),
