@@ -11,7 +11,7 @@ The installer clones this repo and builds the binary for your current machine. I
 Package managers still serve the original project. Npm and brew and mise install upstream builds, not this fork. Use the line below when you want this fork.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YashDahiwlikar914/Opencode/dev/install-fork.sh | bash
+curl -fsSL https://raw.githubusercontent.com/YashDahiwlikar914/Opencode/dev/install.sh | bash
 ```
 
 The script backs up your current binary to opencode-official when that backup does not exist yet. It writes the new build to opencode-fork and points opencode at it. Your shell must list ~/.opencode/bin before any other opencode copy. New shells pick this up when your rc file exports that PATH first. Run the version flag after install to confirm the fork answers.
@@ -21,7 +21,7 @@ The script backs up your current binary to opencode-official when that backup do
 Skip the fresh clone when you already have this repo on disk.
 
 ```bash
-./install-fork.sh --dir ~/Projects/Opencode
+./install.sh --dir ~/Projects/Opencode
 ```
 
 Replace the path with the folder you use.

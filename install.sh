@@ -11,7 +11,7 @@ usage() {
 Fork installer. Clones the fork, builds from source, installs to ~/.opencode/bin.
 
 Usage:
-  install-fork.sh [options]
+  install.sh [options]
 
 Options:
   -h, --help            Show this help
@@ -25,9 +25,9 @@ Env:
   OPENCODE_FORK_DIR     Same as --dir
 
 Examples:
-  curl -fsSL https://raw.githubusercontent.com/YashDahiwlikar914/Opencode/dev/install-fork.sh | bash
-  ./install-fork.sh --branch dev
-  ./install-fork.sh --dir \$HOME/Projects/Opencode
+  curl -fsSL https://raw.githubusercontent.com/YashDahiwlikar914/Opencode/dev/install.sh | bash
+  ./install.sh --branch dev
+  ./install.sh --dir \$HOME/Projects/Opencode
 EOF
 }
 
