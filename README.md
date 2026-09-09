@@ -1,3 +1,41 @@
+## About This Fork
+
+This is a personal fork of OpenCode. It tracks the upstream dev branch and adds small interface polish. Labels and dialogs use Title Case across the app. The prompt bar and the subagent footer show session token totals with cache hit rate. The agent guide stays short on purpose so automated agents load less context.
+
+Bun is the JavaScript runtime this project uses to build and run the code. A binary is the compiled program you execute. There are no prebuilt fork releases yet so the installer builds that binary on your machine.
+
+## Install This Fork
+
+The installer clones this repo and builds the binary for your current machine. It needs Git and curl plus Bun 1.3 or newer. The build takes a few minutes and uses a few gigabytes of disk during compile. The finished binary is near 180 MB.
+
+Package managers still serve the original project. Npm and brew and mise install upstream builds, not this fork. Use the line below when you want this fork.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/YashDahiwlikar914/Opencode/dev/install-fork.sh | bash
+```
+
+The script backs up your current binary to opencode-official when that backup does not exist yet. It writes the new build to opencode-fork and points opencode at it. Your shell must list ~/.opencode/bin before any other opencode copy. New shells pick this up when your rc file exports that PATH first. Run the version flag after install to confirm the fork answers.
+
+## Use Your Own Checkout
+
+Skip the fresh clone when you already have this repo on disk.
+
+```bash
+./install-fork.sh --dir ~/Projects/Opencode
+```
+
+Replace the path with the folder you use.
+
+## Keep The Fork Updated
+
+Re-run the installer for the latest branch state. It pulls the newest commits and rebuilds. To track upstream by hand, fetch upstream dev and rebase, then rebuild for your single platform. The helper at script/update-fork.sh does those three moves in order.
+
+## What Changes Here
+
+The fork follows upstream dev closely. The visible changes are Title Case labels across dialogs and keybinds and session names. Token totals now include cached input and reasoning output in the usage line. Cost always shows even when the amount is zero. The rest matches upstream behavior and the docs below.
+
+---
+
 <p align="center">
   <a href="https://opencode.ai">
     <picture>
