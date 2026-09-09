@@ -42,3 +42,10 @@
     animation-range: calc(100% - 1.1px) calc(100% - 1px);
   }
 }
+
+/* Zero-width space keeps the empty editor at full line height.
+   Written here because the oxc parser rejects the equivalent
+   Tailwind arbitrary value empty:before:content-['\200B'] in JSX. */
+[data-component="prompt-input"]:empty::before {
+  content: "\200B";
+}
